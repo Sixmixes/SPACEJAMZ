@@ -230,12 +230,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!db) {
             console.warn("Firestore not available for gallery images. Using fallback.");
             galleryImages = [ // Ensure these paths are correct for your GitHub Pages structure
-                { src: "/SPACEJAMZ-main/images/artwork/spacejamz-alt.png", alt: "SpaceJamz Artwork - Alt Logo", id: "default1" },
-                { src: "/SPACEJAMZ-main/images/artwork/spaceman.jpg", alt: "SpaceJamz Artwork - Spaceman", id: "default2" },
-                { src: "/SPACEJAMZ-main/images/artwork/spacejamz-logo.png", alt: "SpaceJamz Logo Original", id: "default3" },
-                { src: "/SPACEJAMZ-main/images/artwork/spacejamz-discord-alt.png", alt: "SpaceJamz Discord Alt", id: "default4" },
-                { src: "/SPACEJAMZ-main/images/artwork/spaceman-kreepin.jpg", alt: "Spaceman Kreepin", id: "default5" },
-                { src: "/SPACEJAMZ-main/images/artwork/edmspace.jpg", alt: "EDM Space", id: "default6" },
+                { src: "/images/artwork/spacejamz-alt.png", alt: "SpaceJamz Artwork - Alt Logo", id: "default1" },
+                { src: "/images/artwork/spaceman.jpg", alt: "SpaceJamz Artwork - Spaceman", id: "default2" },
+                { src: "/images/artwork/spacejamz-logo.png", alt: "SpaceJamz Logo Original", id: "default3" },
+                { src: "/images/artwork/spacejamz-discord-alt.png", alt: "SpaceJamz Discord Alt", id: "default4" },
+                { src: "/images/artwork/spaceman-kreepin.jpg", alt: "Spaceman Kreepin", id: "default5" },
+                { src: "/images/artwork/edmspace.jpg", alt: "EDM Space", id: "default6" },
             ];
             renderCarousel();
             return;
@@ -245,16 +245,16 @@ document.addEventListener('DOMContentLoaded', () => {
             galleryImages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             if (galleryImages.length === 0) { 
                  galleryImages = [ // Fallback if Firestore is empty
-                    { src: "/SPACEJAMZ-main/images/artwork/spacejamz-alt.png", alt: "SpaceJamz Artwork - Alt Logo", id: "default1" },
-                    { src: "/SPACEJAMZ-main/images/artwork/spaceman.jpg", alt: "SpaceJamz Artwork - Spaceman", id: "default2" },
+                    { src: "/images/artwork/spacejamz-alt.png", alt: "SpaceJamz Artwork - Alt Logo", id: "default1" },
+                    { src: "/images/artwork/spaceman.jpg", alt: "SpaceJamz Artwork - Spaceman", id: "default2" },
                  ];
             }
             renderCarousel();
         } catch (error) {
             console.error("Error fetching gallery images: ", error);
              galleryImages = [ // Fallback on error
-                { src: "/SPACEJAMZ-main/images/artwork/spacejamz-alt.png", alt: "SpaceJamz Artwork - Alt Logo", id: "default1" },
-                { src: "/SPACEJAMZ-main/images/artwork/spaceman.jpg", alt: "SpaceJamz Artwork - Spaceman", id: "default2" },
+                { src: "/images/artwork/spacejamz-alt.png", alt: "SpaceJamz Artwork - Alt Logo", id: "default1" },
+                { src: "/images/artwork/spaceman.jpg", alt: "SpaceJamz Artwork - Spaceman", id: "default2" },
              ];
             renderCarousel();
         }

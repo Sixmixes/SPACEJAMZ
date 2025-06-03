@@ -3,51 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- SEO Meta Tags (Fill these out!) -->
     <meta name="description" content="Official EPK for SpaceJamz, a Texas-based music producer creating evocative soundscapes for film, TV, and sync licensing. Specializing in Hip-Hop, R&B, EDM, and Pop.">
     <meta name="keywords" content="SpaceJamz, music producer, EPK, sync licensing, film music, TV music, Hip-Hop, R&B, EDM, Pop, soundscapes, Texas producer">
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="YOUR_WEBSITE_URL_HERE"> <!-- e.g., https://yourusername.github.io/your-repo-name/ -->
+    <meta property="og:url" content="https://sixmixes.github.io/SPACEJAMZ/">
     <meta property="og:title" content="SpaceJamz - Official EPK">
     <meta property="og:description" content="Evocative soundscapes for film, TV, and sync. Hip-Hop, R&B, EDM, Pop.">
-    <meta property="og:image" content="YOUR_WEBSITE_URL_HERE/images/1SPACEJAMZ.png"> <!-- Replace YOUR_WEBSITE_URL_HERE -->
-    <!-- Twitter -->
+    <meta property="og:image" content="https://sixmixes.github.io/SPACEJAMZ/images/1SPACEJAMZ.png">
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="YOUR_WEBSITE_URL_HERE"> <!-- e.g., https://yourusername.github.io/your-repo-name/ -->
+    <meta property="twitter:url" content="https://sixmixes.github.io/SPACEJAMZ/">
     <meta property="twitter:title" content="SpaceJamz - Official EPK">
     <meta property="twitter:description" content="Evocative soundscapes for film, TV, and sync. Hip-Hop, R&B, EDM, Pop.">
-    <meta property="twitter:image" content="YOUR_WEBSITE_URL_HERE/images/1SPACEJAMZ.png"> <!-- Replace YOUR_WEBSITE_URL_HERE -->
+    <meta property="twitter:image" content="https://sixmixes.github.io/SPACEJAMZ/images/1SPACEJAMZ.png">
 
     <title>SpaceJamz - Official EPK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
-    <!-- Firebase SDKs -->
-    <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDa-jQTxqYhayBuYysKrr4qr_WukRWvy_g",
-    authDomain: "spacejamz-epk.firebaseapp.com",
-    projectId: "spacejamz-epk",
-    storageBucket: "spacejamz-epk.firebasestorage.app",
-    messagingSenderId: "1052402630837",
-    appId: "1:1052402630837:web:b8f142c63d1103d4b0befc",
-    measurementId: "G-5KHNEWFS76"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+    <!-- Load Firebase SDKs as modules (using v11.8.1 for consistency) -->
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js"></script>
+    <script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js"></script>
+    <!-- Main script file -->
+    <script type="module" src="script.js"></script>
+</head>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>

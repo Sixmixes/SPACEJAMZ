@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Firebase Initialization ---
     let db, auth;
     try {
-        if (window.firebase && typeof window.firebaseConfig !== 'undefined' && window.firebaseConfig.apiKey !== "YOUR_API_KEY" && window.firebaseConfig.apiKey !== "AIzaSyDa-jQTxqYhayBuYysKrr4qr_WukRWvy_g") { // Added your specific placeholder
+        if (window.firebase && typeof window.firebaseConfig !== 'undefined' && window.firebaseConfig.apiKey !== "AIzaSyDa-jQTxqYhayBuYysKrr4qr_WukRWvy_g" && window.firebaseConfig.apiKey !== "AIzaSyDa-jQTxqYhayBuYysKrr4qr_WukRWvy_g") { // Added your specific placeholder
             // Check if Firebase is already initialized to prevent re-initialization errors
             if (!firebase.apps.length) {
                 firebase.initializeApp(window.firebaseConfig);

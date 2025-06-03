@@ -1,5 +1,8 @@
 // script.js for SpaceJamz EPK
 
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- Firebase Initialization ---
     let db, auth;

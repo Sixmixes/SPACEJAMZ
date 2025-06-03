@@ -3,32 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO Meta Tags (Fill these out!) -->
     <meta name="description" content="Official EPK for SpaceJamz, a Texas-based music producer creating evocative soundscapes for film, TV, and sync licensing. Specializing in Hip-Hop, R&B, EDM, and Pop.">
     <meta name="keywords" content="SpaceJamz, music producer, EPK, sync licensing, film music, TV music, Hip-Hop, R&B, EDM, Pop, soundscapes, Texas producer">
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://sixmixes.github.io/SPACEJAMZ/">
+    <meta property="og:url" content="YOUR_WEBSITE_URL_HERE"> <!-- e.g., https://yourusername.github.io/your-repo-name/ -->
     <meta property="og:title" content="SpaceJamz - Official EPK">
     <meta property="og:description" content="Evocative soundscapes for film, TV, and sync. Hip-Hop, R&B, EDM, Pop.">
-    <meta property="og:image" content="https://sixmixes.github.io/SPACEJAMZ/images/1SPACEJAMZ.png">
+    <meta property="og:image" content="YOUR_WEBSITE_URL_HERE/images/1SPACEJAMZ.png"> <!-- Replace YOUR_WEBSITE_URL_HERE -->
+    <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://sixmixes.github.io/SPACEJAMZ/">
+    <meta property="twitter:url" content="YOUR_WEBSITE_URL_HERE"> <!-- e.g., https://yourusername.github.io/your-repo-name/ -->
     <meta property="twitter:title" content="SpaceJamz - Official EPK">
     <meta property="twitter:description" content="Evocative soundscapes for film, TV, and sync. Hip-Hop, R&B, EDM, Pop.">
-    <meta property="twitter:image" content="https://sixmixes.github.io/SPACEJAMZ/images/1SPACEJAMZ.png">
+    <meta property="twitter:image" content="YOUR_WEBSITE_URL_HERE/images/1SPACEJAMZ.png"> <!-- Replace YOUR_WEBSITE_URL_HERE -->
 
     <title>SpaceJamz - Official EPK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 
-    <!-- Load Firebase SDKs as modules (using v11.8.1 for consistency) -->
-    <script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js"></script>
-    <script type="module" src="https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js"></script>
-    <!-- Main script file -->
-    <script type="module" src="script.js"></script>
-</head>
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+      // IMPORTANT: This is where your Firebase project configuration goes.
+      // You get this from the Firebase console when you add a web app to your project.
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+        apiKey: "AIzaSyDa-jQTxqYhayBuYysKrr4qr_WukRWvy_g",
+        authDomain: "spacejamz-epk.firebaseapp.com",
+        projectId: "spacejamz-epk",
+        storageBucket: "spacejamz-epk.firebasestorage.app",
+        messagingSenderId: "1052402630837",
+        appId: "1:1052402630837:web:b8f142c63d1103d4b0befc",
+        measurementId: "G-5KHNEWFS76"
+    };
+      window.firebaseConfig = firebaseConfig; 
+    </script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -122,7 +135,7 @@
                     <div class="aspect-w-16 aspect-h-9 bg-gray-900 rounded-lg" style="border: 1px solid var(--glass-border);">
                         <!-- PASTE YOUR YOUTUBE IFRAME EMBED CODE HERE & REMOVE width/height attributes -->
                         <!-- Example: <iframe src="https://www.youtube.com/watch?v=3__SMkr6fv8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-                         <span class="p-8 text-center text-gray-500 flex items-center justify-center h-full"><iframe src="https://www.youtube.com/embed/q3royw5V4IE?si=cswIPKPUrrefwnob" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></span>
+                         <span class="p-8 text-center text-gray-500 flex items-center justify-center h-full">Replace this span with your YouTube Video Embed Code</span>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">

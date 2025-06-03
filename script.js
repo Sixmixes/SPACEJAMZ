@@ -1,15 +1,5 @@
 // script.js for SpaceJamz EPK
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDa-jQTxqYhayBuYysKrr4qr_WukRWvy_g",
-  authDomain: "spacejamz-epk.firebaseapp.com",
-  projectId: "spacejamz-epk",
-  storageBucket: "spacejamz-epk.firebasestorage.app",
-  messagingSenderId: "1052402630837",
-  appId: "1:1052402630837:web:b8f142c63d1103d4b0befc",
-  measurementId: "G-5KHNEWFS76"
-};
-
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();

@@ -1,9 +1,6 @@
 // script.js for SpaceJamz EPK
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
 
 document.addEventListener('DOMContentLoaded', () => {
   // Example: Check if Firebase is working

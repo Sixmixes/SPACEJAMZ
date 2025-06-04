@@ -130,41 +130,55 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- "Read More" for Bio Section ---
     const bioContent = document.getElementById('bio-content');
-    const bioText = document.getElementById('bio-text'); // The actual paragraph with text
     const readMoreBioButton = document.getElementById('read-more-bio');
+    // bioText element (the <p> tag with id="bio-text") is implicitly handled by bioContent.scrollHeight
 
-    if (bioContent && readMoreBioButton && bioText) {
-        // Initial state: collapsed
-        const initialMaxHeight = "100px"; // Should match CSS
-        bioContent.style.maxHeight = initialMaxHeight;
-        bioContent.classList.add('collapsed');
+    if (bioContent && readMoreBioButton) {
+        const initialCollapsedMaxHeight = 100; // The max-height in pixels for the collapsed state (must match CSS)
 
-        // Check if content is actually overflowing to decide if button is needed
-        // Needs to be un-collapsed temporarily to measure scrollHeight
-        bioContent.style.maxHeight = ''; // Temporarily remove max-height
-        const isOverflowing = bioText.scrollHeight > parseInt(initialMaxHeight);
-        bioContent.style.maxHeight = initialMaxHeight; // Restore max-height
-
-        if (!isOverflowing) {
-            readMoreBioButton.style.display = 'none'; // Hide button if no overflow
+        // Temporarily remove any inline max-height to measure the true full height of the content
+        // This ensures we get the height as if it were naturally flowing.
+        const originalInlineMaxHeight = bioContent.style.maxHeight;
+        bioContent.style.maxHeight = 'none'; 
+        const fullContentHeight = bioContent.scrollHeight;
+        
+        // Restore original inline max-height or let CSS class take over if no inline style was set
+        // If originalInlineMaxHeight was empty, it means CSS was controlling it, so we don't want to set it to 'none' permanently here.
+        if (originalInlineMaxHeight) {
+            bioContent.style.maxHeight = originalInlineMaxHeight;
         } else {
-           readMoreBioButton.style.display = 'inline-block'; // Ensure it's visible
+            // If no inline style was set, we remove the 'none' to let CSS apply its default (e.g. from .collapsed or auto)
+            // However, we will explicitly set it to collapsed height if overflowing.
+            bioContent.style.maxHeight = ''; 
         }
+        
+        // console.log(`Full content height: ${fullContentHeight}px, Collapsed height: ${initialCollapsedMaxHeight}px`);
 
+        if (fullContentHeight > initialCollapsedMaxHeight) {
+            // Content is overflowing, so "Read More" button is needed
+            readMoreBioButton.style.display = 'inline-block';
+            bioContent.style.maxHeight = initialCollapsedMaxHeight + 'px'; // Enforce initial collapsed state via JS
+            bioContent.classList.add('collapsed'); // Add class for fade effect and state tracking
 
-        readMoreBioButton.addEventListener('click', () => {
-            if (bioContent.classList.contains('collapsed')) {
-                bioContent.style.maxHeight = bioText.scrollHeight + 'px';
-                bioContent.classList.remove('collapsed');
-                readMoreBioButton.textContent = 'Read Less';
-            } else {
-                bioContent.style.maxHeight = initialMaxHeight;
-                bioContent.classList.add('collapsed');
-                readMoreBioButton.textContent = 'Read More';
-                // Scroll to top of bio section smoothly if desired after collapsing
-                // bioContent.parentElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
+            readMoreBioButton.addEventListener('click', () => {
+                if (bioContent.classList.contains('collapsed')) {
+                    // Expand: set maxHeight to the measured fullContentHeight
+                    bioContent.style.maxHeight = fullContentHeight + 'px'; 
+                    bioContent.classList.remove('collapsed');
+                    readMoreBioButton.textContent = 'Read Less';
+                } else {
+                    // Collapse: set maxHeight back to initialCollapsedMaxHeight
+                    bioContent.style.maxHeight = initialCollapsedMaxHeight + 'px';
+                    bioContent.classList.add('collapsed');
+                    readMoreBioButton.textContent = 'Read More';
+                }
+            });
+        } else {
+            // Content is not overflowing, no need for the button or collapsed state
+            readMoreBioButton.style.display = 'none';
+            bioContent.style.maxHeight = 'none'; // Ensure all content is visible by removing height restriction
+            bioContent.classList.remove('collapsed'); // Remove class if it was there
+        }
     }
 
 
@@ -329,8 +343,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // MODIFIED: Removed .orderBy("timestamp", "desc")
             const snapshot = await db.collection("galleryImages").get(); 
             galleryImages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            // If you need to sort by timestamp, do it here in JS:
-            // galleryImages.sort((a, b) => (b.timestamp?.toMillis() || 0) - (a.timestamp?.toMillis() || 0));
+            
+            // Optional: Sort in JavaScript if timestamps exist and are needed for gallery.
+            // Ensure timestamp exists and is a Firestore Timestamp object before calling toMillis()
+            galleryImages.sort((a, b) => {
+                const timeA = a.timestamp && a.timestamp.toMillis ? a.timestamp.toMillis() : 0;
+                const timeB = b.timestamp && b.timestamp.toMillis ? b.timestamp.toMillis() : 0;
+                return timeB - timeA; // Sort descending
+            });
 
             if (galleryImages.length === 0) { 
                  galleryImages = [ 

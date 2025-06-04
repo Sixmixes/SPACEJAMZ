@@ -8,11 +8,13 @@
     --accent-cyan: #00F0FF;
     --accent-purple: #A020F0;
     --accent-orange: #FF7A00;
+    --discord-blurple: #5865F2; /* Discord's primary color */
+    --discord-blurple-hover: #4f5bda;
     --card-bg: rgba(26, 16, 60, 0.75); 
     --glass-border: rgba(160, 32, 240, 0.4); 
     --hero-glow-center: rgba(40, 10, 70, 0.25); 
     --hero-glow-mid: rgba(10, 4, 28, 0.35);   
-    --navbar-bg-scrolled: rgba(10, 4, 28, 0.85); /* Dark bg for navbar when scrolled */
+    --navbar-bg-scrolled: rgba(10, 4, 28, 0.85); 
     --navbar-blur: blur(10px);
 }
 
@@ -29,7 +31,6 @@ body {
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
-    /* Added transform for autohide and ensured other transitions are included */
     transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out, backdrop-filter 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
@@ -40,17 +41,14 @@ body {
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-/* Styles for autohide on mobile */
-@media (max-width: 767px) { /* md breakpoint from Tailwind */
-    #navbar:not(.scrolled):not(.navbar-hidden-on-idle) { /* Ensure background if not scrolled AND not hidden by idle */
+@media (max-width: 767px) { 
+    #navbar:not(.scrolled):not(.navbar-hidden-on-idle) { 
         background-color: rgba(10, 4, 28, 0.95); 
     }
-    /* This class will be added by JS to hide the navbar */
     #navbar.navbar-hidden-on-idle {
         transform: translateY(-100%);
     }
 }
-
 
 .nav-logo {
     color: var(--accent-cyan);
@@ -84,9 +82,29 @@ body {
     text-shadow: 0 0 5px var(--accent-pink);
 }
 
+/* Discord Nav Link Style */
+.btn-discord-nav {
+    background-color: rgba(88, 101, 242, 0.2); /* Subtle Discord Blurple background */
+    border: 1px solid var(--discord-blurple);
+    color: var(--text-light); /* Keep text light for contrast on dark nav */
+    padding: 0.4rem 0.8rem !important; /* Ensure padding is consistent */
+    margin-left: 0.5rem; /* Add some spacing */
+}
+.btn-discord-nav:hover {
+    background-color: var(--discord-blurple);
+    color: white !important; /* White text on hover for better contrast */
+    text-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+
 .mobile-nav-link {
     padding: 0.75rem 1rem; 
     width: 100%;
+}
+.mobile-nav-link.btn-discord-nav { /* Specific for mobile discord button */
+    margin-top: 0.5rem;
+    width: auto; /* Allow it to size to content in mobile menu */
+    display: inline-block; /* Center it better */
 }
 
 
@@ -99,7 +117,6 @@ body {
     width: 100%;
     border-top: 1px solid var(--glass-border); 
 }
-
 
 .font-orbitron {
     font-family: 'Orbitron', sans-serif;
@@ -178,9 +195,40 @@ body {
     }
 }
 
-.hero-section > .btn-primary {
+.hero-section > .btn-primary { /* Explore Music button */
     position: relative; 
     z-index: 2;
+}
+
+/* Discord CTA Button Styles */
+.btn-discord-hero, .btn-discord-contact {
+    background-color: var(--discord-blurple);
+    color: white;
+    font-family: 'Orbitron', sans-serif; /* Match other prominent text */
+    font-weight: 700;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 15px var(--discord-blurple), 0 0 5px rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.2); /* Subtle border */
+}
+
+.btn-discord-hero:hover, .btn-discord-contact:hover {
+    background-color: var(--discord-blurple-hover);
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 0 25px var(--discord-blurple), 0 0 40px var(--accent-cyan);
+}
+
+.btn-discord-hero { /* Specific for Hero section */
+    padding: 0.8rem 2.2rem; /* Make it larger */
+    font-size: 1.25rem; /* Larger font */
+    margin-bottom: 1.5rem; /* More space below */
+}
+
+.btn-discord-contact { /* Specific for Contact section */
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
 }
 
 

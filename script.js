@@ -32,18 +32,54 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Error during Firebase initialization:", error);
     }
 
-    // --- Navbar Scroll Effect & Mobile Menu ---
+    // --- Navbar Scroll Effect, Mobile Menu & Autohide ---
     const navbar = document.getElementById('navbar');
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
-    const mainContentForPadding = document.querySelector('main'); // To adjust padding if navbar is fixed
+    
+    let idleTimer = null;
+    const idleTimeoutDuration = 3000; // 3 seconds for navbar to autohide
+
+    function showNavbar() {
+        if (navbar) {
+            navbar.classList.remove('navbar-hidden-on-idle');
+        }
+    }
+
+    function hideNavbarOnIdle() {
+        // Hide only if on mobile, navbar exists, and mobile menu is closed
+        if (navbar && window.innerWidth < 768 && (!mobileMenu || mobileMenu.classList.contains('hidden'))) {
+            navbar.classList.add('navbar-hidden-on-idle');
+        }
+    }
+
+    function resetNavbarIdleTimer() {
+        if (window.innerWidth < 768) { // Only operate this timer logic on mobile
+            clearTimeout(idleTimer);
+            showNavbar(); // Show navbar immediately on activity
+            // Only set timer if mobile menu is closed (or doesn't exist)
+            if (!mobileMenu || mobileMenu.classList.contains('hidden')) {
+                 idleTimer = setTimeout(hideNavbarOnIdle, idleTimeoutDuration);
+            }
+        } else {
+            // On desktop, ensure navbar is always visible (remove idle class if it was somehow set)
+            showNavbar();
+            clearTimeout(idleTimer); // Clear timer if resizing from mobile to desktop
+        }
+    }
+
 
     if (navbar) {
+        // Scroll effect for background
         window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
+            }
+            // Also reset idle timer on scroll (for mobile)
+            if (window.innerWidth < 768) {
+                resetNavbarIdleTimer();
             }
         });
     }
@@ -51,18 +87,35 @@ document.addEventListener('DOMContentLoaded', () => {
     if (mobileMenuButton && mobileMenu) {
         mobileMenuButton.addEventListener('click', () => {
             mobileMenu.classList.toggle('hidden');
-            // Optional: Change hamburger icon to X and back
             const icon = mobileMenuButton.querySelector('svg');
             if (mobileMenu.classList.contains('hidden')) {
                 icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>`;
+                // If menu is closed on mobile, restart idle timer
+                if(window.innerWidth < 768) resetNavbarIdleTimer();
             } else {
                 icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>`;
+                // If menu is opened on mobile, ensure navbar is visible and stop idle timer
+                if(window.innerWidth < 768) {
+                    clearTimeout(idleTimer);
+                    showNavbar();
+                }
             }
         });
     }
     
+    // Initial setup for autohide timer on mobile
+    if (window.innerWidth < 768) {
+        resetNavbarIdleTimer();
+    }
+    // Add touch and mousemove listeners to reset idle timer on mobile
+    window.addEventListener('touchstart', resetNavbarIdleTimer, { passive: true });
+    // mousemove might be too sensitive or not relevant for pure touch devices, but can be kept for hybrid or testing
+    window.addEventListener('mousemove', () => { 
+        if (window.innerWidth < 768) resetNavbarIdleTimer();
+    });
+
+
     // --- Smooth Scroll for Nav Links & Active State (Desktop and Mobile) ---
-    // Consolidate selectors for all nav links
     const allNavLinks = document.querySelectorAll('.nav-link'); 
     const sections = document.querySelectorAll('main section[id]');
 
@@ -73,18 +126,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const targetId = this.getAttribute('href').substring(1);
                 const targetElement = document.getElementById(targetId);
                 if (targetElement) {
-                    const navbarHeight = navbar.offsetHeight;
-                    // If mobile menu is open and it's a mobile link, consider its height too, or just close it
-                    let extraOffset = 0;
+                    let currentNavbarHeight = navbar.offsetHeight;
+                    if (navbar.classList.contains('navbar-hidden-on-idle')) {
+                        // If navbar is hidden, for calculation purposes, assume it's visible or use 0
+                        // Or, ensure it becomes visible before scrolling. For simplicity, we'll use its actual height.
+                        // showNavbar(); // Optionally show it before calculating
+                    }
+
+                    // If mobile menu is open and it's a mobile link, close it
                     if (mobileMenu && !mobileMenu.classList.contains('hidden') && this.classList.contains('mobile-nav-link')) {
-                        // extraOffset = mobileMenu.offsetHeight; // Could make it jump if menu closes after
-                        mobileMenu.classList.add('hidden'); // Close mobile menu on click
+                        mobileMenu.classList.add('hidden'); 
                          const icon = mobileMenuButton.querySelector('svg');
                          icon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>`;
+                         if(window.innerWidth < 768) resetNavbarIdleTimer(); // Restart idle timer after closing menu
                     }
 
                     const elementPosition = targetElement.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - navbarHeight + extraOffset;
+                    const offsetPosition = elementPosition + window.pageYOffset - currentNavbarHeight;
                     
                     window.scrollTo({
                         top: offsetPosition,
@@ -96,25 +154,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function updateActiveNavLink() {
             let currentSectionId = '';
-            // Adjust for navbar height, more accurately if mobile menu is open and fixed
             let effectiveNavbarHeight = navbar.offsetHeight;
-            // if (mobileMenu && !mobileMenu.classList.contains('hidden') && window.innerWidth < 768) {
-            //     effectiveNavbarHeight += mobileMenu.offsetHeight; 
-            // }
-
+             // If navbar is hidden due to idle, active link calculation should still consider its height as if it were there
+            // Or, if it's truly gone (display:none), then height would be 0. But with transform, offsetHeight is still its full height.
+            // So no change needed here if using transform for hiding.
 
             sections.forEach(section => {
-                const sectionTop = section.offsetTop - effectiveNavbarHeight - 20; // Added a bit more buffer
+                const sectionTop = section.offsetTop - effectiveNavbarHeight - 20; 
                 if (window.pageYOffset >= sectionTop) {
                     currentSectionId = section.getAttribute('id');
                 }
             });
             
-            // Handle case for top of page before first section
             if (sections.length > 0 && window.pageYOffset < (sections[0].offsetTop - effectiveNavbarHeight - 20) && window.pageYOffset < 100) { 
                  currentSectionId = ''; 
             }
-
 
             allNavLinks.forEach(link => {
                 link.classList.remove('active');
@@ -123,61 +177,68 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }
-        window.addEventListener('scroll', updateActiveNavLink);
-        window.addEventListener('resize', updateActiveNavLink); // Recalculate on resize
-        updateActiveNavLink(); // Initial call
+        window.addEventListener('scroll', updateActiveNavLink); // updateActiveNavLink is already called by scroll for navbar bg
+        window.addEventListener('resize', () => { // Combined resize listener
+            updateActiveNavLink();
+            
+            // Autohide navbar logic on resize
+            if (window.innerWidth >= 768) {
+                showNavbar(); 
+                clearTimeout(idleTimer);
+            } else {
+                resetNavbarIdleTimer(); 
+            }
+
+            // Carousel resize logic (from existing code)
+            const oldItemsPerPage = itemsPerPage; 
+            updateItemsPerPage(); 
+            if (oldItemsPerPage !== itemsPerPage) {
+                currentIndex = 0; 
+                renderCarousel(); 
+            } else {
+                updateCarouselView(); 
+            }
+        }); 
+        updateActiveNavLink(); 
     }
 
     // --- "Read More" for Bio Section ---
     const bioContent = document.getElementById('bio-content');
     const readMoreBioButton = document.getElementById('read-more-bio');
-    // bioText element (the <p> tag with id="bio-text") is implicitly handled by bioContent.scrollHeight
 
     if (bioContent && readMoreBioButton) {
-        const initialCollapsedMaxHeight = 100; // The max-height in pixels for the collapsed state (must match CSS)
+        const initialCollapsedMaxHeight = 100; 
 
-        // Temporarily remove any inline max-height to measure the true full height of the content
-        // This ensures we get the height as if it were naturally flowing.
         const originalInlineMaxHeight = bioContent.style.maxHeight;
         bioContent.style.maxHeight = 'none'; 
         const fullContentHeight = bioContent.scrollHeight;
         
-        // Restore original inline max-height or let CSS class take over if no inline style was set
-        // If originalInlineMaxHeight was empty, it means CSS was controlling it, so we don't want to set it to 'none' permanently here.
         if (originalInlineMaxHeight) {
             bioContent.style.maxHeight = originalInlineMaxHeight;
         } else {
-            // If no inline style was set, we remove the 'none' to let CSS apply its default (e.g. from .collapsed or auto)
-            // However, we will explicitly set it to collapsed height if overflowing.
             bioContent.style.maxHeight = ''; 
         }
         
-        // console.log(`Full content height: ${fullContentHeight}px, Collapsed height: ${initialCollapsedMaxHeight}px`);
-
         if (fullContentHeight > initialCollapsedMaxHeight) {
-            // Content is overflowing, so "Read More" button is needed
             readMoreBioButton.style.display = 'inline-block';
-            bioContent.style.maxHeight = initialCollapsedMaxHeight + 'px'; // Enforce initial collapsed state via JS
-            bioContent.classList.add('collapsed'); // Add class for fade effect and state tracking
+            bioContent.style.maxHeight = initialCollapsedMaxHeight + 'px'; 
+            bioContent.classList.add('collapsed'); 
 
             readMoreBioButton.addEventListener('click', () => {
                 if (bioContent.classList.contains('collapsed')) {
-                    // Expand: set maxHeight to the measured fullContentHeight
                     bioContent.style.maxHeight = fullContentHeight + 'px'; 
                     bioContent.classList.remove('collapsed');
                     readMoreBioButton.textContent = 'Read Less';
                 } else {
-                    // Collapse: set maxHeight back to initialCollapsedMaxHeight
                     bioContent.style.maxHeight = initialCollapsedMaxHeight + 'px';
                     bioContent.classList.add('collapsed');
                     readMoreBioButton.textContent = 'Read More';
                 }
             });
         } else {
-            // Content is not overflowing, no need for the button or collapsed state
             readMoreBioButton.style.display = 'none';
-            bioContent.style.maxHeight = 'none'; // Ensure all content is visible by removing height restriction
-            bioContent.classList.remove('collapsed'); // Remove class if it was there
+            bioContent.style.maxHeight = 'none'; 
+            bioContent.classList.remove('collapsed'); 
         }
     }
 
@@ -268,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         function animateCosmicBackground() { 
-            requestAnimationFrame(animateCosmicBackground); // Moved to the top for smoother animation start
+            requestAnimationFrame(animateCosmicBackground); 
             ctx.clearRect(0, 0, starfieldCanvas.width, starfieldCanvas.height);
             stars.forEach(star => star.update());
             const currentTime = Date.now();
@@ -284,6 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('resize', () => { 
             resizeCanvas();
             initStarsAndComets(); 
+            // Note: Other resize logic is now in the combined 'resize' listener for navbar/carousel
         });
         resizeCanvas(); 
         initStarsAndComets(); 
@@ -305,18 +367,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let galleryImages = []; 
     let currentIndex = 0;
-    let itemsPerPage = 3; // Default for desktop
+    let itemsPerPage = 3; 
 
     function updateItemsPerPage() {
-        if (window.innerWidth < 640) { // Tailwind 'sm' breakpoint
+        if (window.innerWidth < 640) { 
             itemsPerPage = 1;
-        } else if (window.innerWidth < 768) { // Tailwind 'md' breakpoint
+        } else if (window.innerWidth < 768) { 
             itemsPerPage = 2;
         } else {
             itemsPerPage = 3;
         }
     }
-
 
     const prevArrowSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>`;
     const nextArrowSVG = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-full h-full"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>`;
@@ -335,21 +396,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 { src: "./images/artwork/spaceman-kreepin.jpg", alt: "Spaceman Kreepin", id: "default5" },
                 { src: "./images/artwork/edmspace.jpg", alt: "EDM Space", id: "default6" },
             ];
-            updateItemsPerPage(); // Call before rendering
+            updateItemsPerPage(); 
             renderCarousel();
             return;
         }
         try {
-            // MODIFIED: Removed .orderBy("timestamp", "desc")
             const snapshot = await db.collection("galleryImages").get(); 
             galleryImages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
-            // Optional: Sort in JavaScript if timestamps exist and are needed for gallery.
-            // Ensure timestamp exists and is a Firestore Timestamp object before calling toMillis()
             galleryImages.sort((a, b) => {
                 const timeA = a.timestamp && a.timestamp.toMillis ? a.timestamp.toMillis() : 0;
                 const timeB = b.timestamp && b.timestamp.toMillis ? b.timestamp.toMillis() : 0;
-                return timeB - timeA; // Sort descending
+                return timeB - timeA; 
             });
 
             if (galleryImages.length === 0) { 
@@ -365,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { src: "./images/artwork/spaceman.jpg", alt: "SpaceJamz Artwork - Spaceman", id: "default2" },
              ];
         }
-        updateItemsPerPage(); // Call before rendering
+        updateItemsPerPage(); 
         renderCarousel();
     }
 
@@ -375,7 +432,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         galleryImages.forEach((image) => { 
             const item = document.createElement('div');
-            // Adjust width based on itemsPerPage
             if (itemsPerPage === 1) {
                 item.className = 'carousel-item flex-none w-full p-2';
             } else if (itemsPerPage === 2) {
@@ -451,17 +507,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    window.addEventListener('resize', () => {
-        const oldItemsPerPage = itemsPerPage;
-        updateItemsPerPage();
-        if (oldItemsPerPage !== itemsPerPage) {
-            currentIndex = 0; 
-            renderCarousel(); 
-        } else {
-            updateCarouselView(); 
-        }
-    });
+    // Combined resize listener is now handling carousel updates.
+    // window.addEventListener('resize', () => { ... }); // This specific one is removed
     
     function addLightboxListeners() {
         document.querySelectorAll('.gallery-img').forEach(img => {
@@ -507,17 +554,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         testimonialsList.innerHTML = '<p class="text-center text-gray-400">Loading signals...</p>';
         try {
-            // MODIFIED: Removed .orderBy("timestamp", "desc")
             const snapshot = await db.collection("testimonials").where("approved", "==", true).get();
-            
             let fetchedTestimonials = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
-            // Optional: Sort in JavaScript if timestamps exist and are needed.
-            // Ensure timestamp exists and is a Firestore Timestamp object before calling toMillis()
             fetchedTestimonials.sort((a, b) => {
                 const timeA = a.timestamp && a.timestamp.toMillis ? a.timestamp.toMillis() : 0;
                 const timeB = b.timestamp && b.timestamp.toMillis ? b.timestamp.toMillis() : 0;
-                return timeB - timeA; // Sort descending
+                return timeB - timeA; 
             });
 
             if (fetchedTestimonials.length === 0) {
@@ -525,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             testimonialsList.innerHTML = ''; 
-            fetchedTestimonials.forEach(testimonialData => { // Use the mapped data
+            fetchedTestimonials.forEach(testimonialData => { 
                 const card = document.createElement('div');
                 card.className = 'testimonial-card group relative'; 
                 card.innerHTML = `
@@ -536,7 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const deleteBtn = document.createElement('button');
                     deleteBtn.innerHTML = '× Delete';
                     deleteBtn.className = 'btn-danger text-xs absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity';
-                    deleteBtn.onclick = (e) => { e.stopPropagation(); deleteTestimonial(testimonialData.id); }; // Use testimonialData.id
+                    deleteBtn.onclick = (e) => { e.stopPropagation(); deleteTestimonial(testimonialData.id); }; 
                     card.appendChild(deleteBtn);
                 }
                 testimonialsList.appendChild(card);
@@ -578,7 +620,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     testimonialMessage.className = "text-center mt-4 text-sm text-green-400";
                 }
                 testimonialForm.reset();
-                 // After submitting a new testimonial, if admin, reload unapproved ones
                 if (auth && auth.currentUser) {
                     loadUnapprovedTestimonials();
                 }
@@ -704,17 +745,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         unapprovedTestimonialsContainer.innerHTML = '<h3 class="font-orbitron text-xl text-accent-pink my-6 text-center section-title">Awaiting Approval</h3>';
         try {
-            // MODIFIED: Removed .orderBy("timestamp", "asc")
             const snapshot = await db.collection("testimonials").where("approved", "==", false).get();
-            
             let unapproved = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
-            // Optional: Sort in JavaScript if timestamps exist and are needed.
-            // Ensure timestamp exists and is a Firestore Timestamp object before calling toMillis()
              unapproved.sort((a, b) => {
                 const timeA = a.timestamp && a.timestamp.toMillis ? a.timestamp.toMillis() : 0;
                 const timeB = b.timestamp && b.timestamp.toMillis ? b.timestamp.toMillis() : 0;
-                return timeA - timeB; // Sort ascending
+                return timeA - timeB; 
             });
 
             if (unapproved.length === 0) {
@@ -722,7 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 const listEl = document.createElement('div');
                 listEl.className = "space-y-4 mb-8";
-                unapproved.forEach(testimonialData => { // Use the mapped data
+                unapproved.forEach(testimonialData => { 
                     const item = document.createElement('div');
                     item.className = 'testimonial-card p-4 text-sm'; 
                     item.innerHTML = `

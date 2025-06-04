@@ -1,34 +1,36 @@
 // script.js for SpaceJamz EPK
 
-// Initialize Firebase
-
 document.addEventListener('DOMContentLoaded', () => {
-  // Example: Check if Firebase is working
-  console.log("Firebase initialized:", firebase);
-  console.log("Firestore instance:", db);
+    // --- Firebase Initialization ---
     let db, auth;
     try {
-        if (window.firebase && typeof window.firebaseConfig !== 'undefined' && window.firebaseConfig.apiKey !== "YOUR_API_KEY" && window.firebaseConfig.apiKey !== "AIzaSyDa-jQTxqYhayBuYysKrr4qr_WukRWvy_g") { // Added your specific placeholder
-            // Check if Firebase is already initialized to prevent re-initialization errors
-            if (!firebase.apps.length) {
+        // Check if firebaseConfig is defined and not using a generic placeholder API key
+        if (window.firebase && typeof window.firebaseConfig !== 'undefined' && 
+            window.firebaseConfig.apiKey && window.firebaseConfig.apiKey !== "YOUR_API_KEY") { // Removed the check against your specific key
+
+            if (!firebase.apps.length) { // Initialize only if no apps exist
                 firebase.initializeApp(window.firebaseConfig);
-                console.log("Firebase initialized successfully.");
+                console.log("Firebase initialized successfully with your provided config.");
             } else {
-                firebase.app(); // if already initialized, use that app
+                firebase.app(); // Use existing app
                 console.log("Firebase was already initialized.");
             }
             db = firebase.firestore();
             auth = firebase.auth();
-            // firebase.firestore.setLogLevel('debug'); 
         } else {
-            if (window.firebaseConfig && (window.firebaseConfig.apiKey === "YOUR_API_KEY" || window.firebaseConfig.apiKey === "AIzaSyDa-jQTxqYhayBuYysKrr4qr_WukRWvy_g")) {
-                console.warn("Firebase config is using placeholder values. Dynamic features requiring Firebase will be limited.");
+            if (window.firebaseConfig && window.firebaseConfig.apiKey === "YOUR_API_KEY") { // This catches only the generic placeholder
+                console.warn("Firebase config is using the generic 'YOUR_API_KEY' placeholder. Dynamic features requiring Firebase will be limited.");
+            } else if (!window.firebase) {
+                console.error("Firebase SDK not loaded. Dynamic features requiring Firebase will be limited.");
+            } else if (typeof window.firebaseConfig === 'undefined' || !window.firebaseConfig.apiKey) {
+                console.error("Firebase config object is missing or incomplete (no API key). Dynamic features requiring Firebase will be limited.");
             } else {
-                console.error("Firebase SDK or config not found/incomplete. Dynamic features requiring Firebase will be limited.");
+                // This case should ideally not be hit if the config is truly yours and valid
+                console.error("Firebase could not be initialized. Please check your firebaseConfig object and Firebase project setup.");
             }
         }
     } catch (error) {
-        console.error("Error initializing Firebase:", error);
+        console.error("Error during Firebase initialization:", error);
     }
 
     // --- Navbar Scroll Effect ---
@@ -197,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
             resizeCanvas();
             initStarsAndComets(); 
         });
-        resizeCanvas(); // Initial call
+        resizeCanvas(); 
         initStarsAndComets(); 
         animateCosmicBackground(); 
     }
@@ -228,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchGalleryImages() {
         if (!db) {
             console.warn("Firestore not available for gallery images. Using fallback.");
-            galleryImages = [ // Ensure these paths are correct for your GitHub Pages structure
+            galleryImages = [ 
                 { src: "./images/artwork/spacejamz-alt.png", alt: "SpaceJamz Artwork - Alt Logo", id: "default1" },
                 { src: "./images/artwork/spaceman.jpg", alt: "SpaceJamz Artwork - Spaceman", id: "default2" },
                 { src: "./images/artwork/spacejamz-logo.png", alt: "SpaceJamz Logo Original", id: "default3" },
@@ -243,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const snapshot = await db.collection("galleryImages").orderBy("timestamp", "desc").get();
             galleryImages = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             if (galleryImages.length === 0) { 
-                 galleryImages = [ // Fallback if Firestore is empty
+                 galleryImages = [ 
                     { src: "./images/artwork/spacejamz-alt.png", alt: "SpaceJamz Artwork - Alt Logo", id: "default1" },
                     { src: "./images/artwork/spaceman.jpg", alt: "SpaceJamz Artwork - Spaceman", id: "default2" },
                  ];
@@ -251,7 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderCarousel();
         } catch (error) {
             console.error("Error fetching gallery images: ", error);
-             galleryImages = [ // Fallback on error
+             galleryImages = [ 
                 { src: "./images/artwork/spacejamz-alt.png", alt: "SpaceJamz Artwork - Alt Logo", id: "default1" },
                 { src: "./images/artwork/spaceman.jpg", alt: "SpaceJamz Artwork - Spaceman", id: "default2" },
              ];
@@ -475,7 +477,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (logoutBtn) logoutBtn.addEventListener('click', adminLogout);
             
             if (adminGalleryControls) adminGalleryControls.classList.remove('hidden');
-            if (unapprovedTestimonialsContainer) unapprovedTestimonialsContainer.innerHTML = ''; // Clear it before loading
+            if (unapprovedTestimonialsContainer) unapprovedTestimonialsContainer.innerHTML = ''; 
             loadUnapprovedTestimonials(); 
         } else { 
             adminStatusDiv.innerHTML = `<button id="admin-login-prompt-btn" class="btn-secondary-inline">Admin</button>`;
@@ -486,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
             if (adminGalleryControls) adminGalleryControls.classList.add('hidden');
-            if (unapprovedTestimonialsContainer) unapprovedTestimonialsContainer.innerHTML = ''; // Clear admin-only content
+            if (unapprovedTestimonialsContainer) unapprovedTestimonialsContainer.innerHTML = ''; 
         }
         renderCarousel(); 
         fetchTestimonials();
@@ -606,7 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const imageUrl = newImageUrlInput.value.trim();
             const altText = newImageAltInput.value.trim();
             if (!imageUrl || !altText) {
-                console.warn("Please provide both image URL and alt text."); // Consider a user-facing message
+                console.warn("Please provide both image URL and alt text."); 
                 return;
             }
             try {
@@ -618,10 +620,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 newImageUrlInput.value = '';
                 newImageAltInput.value = '';
                 fetchGalleryImages(); 
-                console.log("Image added to gallery!"); // Consider a user-facing success message
+                console.log("Image added to gallery!"); 
             } catch (error) {
                 console.error("Error adding image to gallery:", error);
-                console.error("Error adding image. See console."); // Consider a user-facing error message
+                console.error("Error adding image. See console."); 
             }
         });
     }

@@ -11,13 +11,13 @@
     <meta property="og:url" content="YOUR_WEBSITE_URL_HERE"> <!-- e.g., https://yourusername.github.io/your-repo-name/ -->
     <meta property="og:title" content="SpaceJamz - Official EPK">
     <meta property="og:description" content="Evocative soundscapes for film, TV, and sync. Hip-Hop, R&B, EDM, Pop.">
-    <meta property="og:image" content="YOUR_WEBSITE_URL_HERE/images/1SPACEJAMZ.png"> <!-- Replace YOUR_WEBSITE_URL_HERE -->
+    <meta property="og:image" content="YOUR_WEBSITE_URL_HERE/images/1SPACEJAMZ.png"> <!-- Replace YOUR_WEBSITE_URL_HERE and ensure path is correct -->
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="YOUR_WEBSITE_URL_HERE"> <!-- e.g., https://yourusername.github.io/your-repo-name/ -->
     <meta property="twitter:title" content="SpaceJamz - Official EPK">
     <meta property="twitter:description" content="Evocative soundscapes for film, TV, and sync. Hip-Hop, R&B, EDM, Pop.">
-    <meta property="twitter:image" content="YOUR_WEBSITE_URL_HERE/images/1SPACEJAMZ.png"> <!-- Replace YOUR_WEBSITE_URL_HERE -->
+    <meta property="twitter:image" content="YOUR_WEBSITE_URL_HERE/images/1SPACEJAMZ.png"> <!-- Replace YOUR_WEBSITE_URL_HERE and ensure path is correct -->
 
     <title>SpaceJamz - Official EPK</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -25,32 +25,31 @@
     <link rel="stylesheet" href="style.css">
 
     <!-- Firebase SDKs -->
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyDa-jQTxqYhayBuYysKrr4qr_WukRWvy_g",
-    authDomain: "spacejamz-epk.firebaseapp.com",
-    projectId: "spacejamz-epk",
-    storageBucket: "spacejamz-epk.firebasestorage.app",
-    messagingSenderId: "1052402630837",
-    appId: "1:1052402630837:web:b8f142c63d1103d4b0befc",
-    measurementId: "G-5KHNEWFS76"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+    <script type="module">
+      // This is your Firebase project configuration.
+      // You get this from the Firebase console when you add a web app to your project.
+      const firebaseConfig = {
+        apiKey: "AIzaSyDa-jQTxqYhayBuYysKrr4qr_WukRWvy_g", // Your actual API key
+        authDomain: "spacejamz-epk.firebaseapp.com",
+        projectId: "spacejamz-epk",
+        storageBucket: "spacejamz-epk.firebasestorage.app", 
+        messagingSenderId: "1052402630837",
+        appId: "1:1052402630837:web:b8f142c63d1103d4b0befc",
+        measurementId: "G-5KHNEWFS76" // Optional
+      };
+      // Make the config globally accessible for script.js
+      window.firebaseConfig = firebaseConfig; 
+      // Note: Actual Firebase app initialization (firebase.initializeApp) is done in script.js
+      // after the Firebase SDKs below are loaded and the DOM is ready.
+      // The "import" statements for initializeApp, getAnalytics etc. are removed from here
+      // because we are using the CDN-loaded compat libraries which provide a global `firebase` object.
+    </script>
+    <!-- Load Firebase SDKs (compat versions for global `firebase` object) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <!-- If you plan to use Analytics, uncomment the next line and ensure it's initialized in script.js if needed -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics-compat.js"></script> -->
 
 </head>
 <body class="antialiased">
@@ -75,7 +74,7 @@
     </nav>
 
     <header class="hero-section pt-20"> 
-        <img src="./images/1SPACEJAMZ.png" alt="SpaceJamz Logo" class="hero-logo" onerror="this.onerror=null;this.src='https://placehold.co/300x300/0A041C/E0E7FF?text=SPACEJAMZ'; console.error('Main logo not found. Path used: /images/1SPACEJAMZ.png');">
+        <img src="./images/1SPACEJAMZ.png" alt="SpaceJamz Logo" class="hero-logo" onerror="this.onerror=null;this.src='https://placehold.co/300x300/0A041C/E0E7FF?text=SPACEJAMZ'; console.error('Main logo not found. Path used: ./images/1SPACEJAMZ.png');">
         <p class="hero-tagline text-xl md:text-3xl font-orbitron text-gray-300 mb-8">Interstellar Beats & Cosmic Soundscapes</p>
         <a href="#music" class="btn-primary text-white font-semibold py-3 px-8 rounded-lg text-lg inline-block">Explore Music</a>
         <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
@@ -87,12 +86,12 @@
 
     <main class="py-16 px-4 sm:px-6 lg:px-8 relative z-10 mt-16"> 
         <section id="about" class="about-section mb-24">
-            <img src="./images/spaceman-work.gif" alt="Spaceman working at PC" class="about-background-gif" onerror="this.style.display='none'; console.error('Spaceman work GIF not found. Path used: /images/spaceman-work.gif');">
+            <img src="./images/spaceman-work.gif" alt="Spaceman working at PC" class="about-background-gif" onerror="this.style.display='none'; console.error('Spaceman work GIF not found. Path used: ./images/spaceman-work.gif');">
             <div class="about-content-wrapper">
                 <div class="max-w-4xl mx-auto text-center">
                     <h2 class="section-title">The Sonic Alchemist</h2>
                     <div class="glassmorphism p-8 md:p-12 rounded-xl">
-                        <img src="./images/artwork/spaceman.jpg" alt="SpaceJamz Artist Photo" class="w-36 h-36 rounded-full mx-auto mb-8 border-4" style="border-color: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple);" onerror="this.onerror=null;this.src='https://placehold.co/150x150/A020F0/E0E7FF?text=SJ'; console.error('Artist photo not found.');">
+                        <img src="./images/artwork/spaceman.jpg" alt="SpaceJamz Artist Photo" class="w-36 h-36 rounded-full mx-auto mb-8 border-4" style="border-color: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple);" onerror="this.onerror=null;this.src='https://placehold.co/150x150/A020F0/E0E7FF?text=SJ'; console.error('Artist photo not found. Path used: ./images/artwork/spaceman.jpg');">
                         <p class="text-lg md:text-xl text-gray-300 leading-relaxed">
                             From the heart of Texas, SpaceJamz emerges as a sonic architect, passionately forging evocative, versatile soundscapes destined to amplify storytelling. With a decade of interstellar navigation in music production, SpaceJamz charts courses through the galaxies of Hip-Hop, R&B, EDM, and Pop, blending lush atmospheres, intricate rhythms, and heartfelt melodies that resonate across diverse audiences.
                             <br><br>
@@ -108,7 +107,7 @@
         <section id="music" class="mb-24">
             <h2 class="section-title">Latest Transmissions</h2>
             <div class="max-w-4xl mx-auto">
-                <div class="card music-embed p-4 md:p-6 no-hover-effect"> <!-- Added no-hover-effect to prevent card scaling -->
+                <div class="card music-embed p-4 md:p-6 no-hover-effect"> 
                     <h3 class="font-orbitron text-2xl md:text-3xl font-semibold mb-4 text-center" style="color: var(--accent-pink);">SpaceJamz on SoundCloud</h3>
                     <iframe 
                         width="100%" 
@@ -136,12 +135,11 @@
         <section id="videos" class="video-section mb-24">
             <h2 class="section-title">Video Transmissions</h2>
             <div class="max-w-4xl mx-auto">
-                <div class="card video-embed mb-12 p-4 md:p-6 no-hover-effect"> <!-- Added no-hover-effect -->
+                <div class="card video-embed mb-12 p-4 md:p-6 no-hover-effect"> 
                     <h3 class="font-orbitron text-2xl md:text-3xl font-semibold mb-4 text-center" style="color: var(--accent-cyan);">Featured Video</h3>
                     <div class="aspect-w-16 aspect-h-9 bg-gray-900 rounded-lg" style="border: 1px solid var(--glass-border);">
                         <!-- PASTE YOUR YOUTUBE IFRAME EMBED CODE HERE & REMOVE width/height attributes -->
-                        <!-- Example: <iframe src="https://www.youtube.com/watch?v=3__SMkr6fv8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-                         <span class="p-8 text-center text-gray-500 flex items-center justify-center h-full"><iframe src="https://www.youtube.com/embed/q3royw5V4IE?si=cswIPKPUrrefwnob" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe></span>
+                        <iframe src="https://www.youtube.com/embed/q3royw5V4IE?si=cswIPKPUrrefwnob" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
@@ -170,7 +168,7 @@
         </section>
 
         <section id="gallery" class="gallery-section mb-24 relative overflow-hidden rounded-2xl">
-            <img src="/images/art-gallery-bg.gif" alt="Floating Astronaut Background" class="gallery-background-gif" onerror="this.style.display='none'; console.error('Gallery background GIF (art-gallery-bg.gif) not found. Path used: /images/art-gallery-bg.gif');"> 
+            <img src="./images/art-gallery-bg.gif" alt="Floating Astronaut Background" class="gallery-background-gif" onerror="this.style.display='none'; console.error('Gallery background GIF (art-gallery-bg.gif) not found. Path used: ./images/art-gallery-bg.gif');"> 
             <div class="gallery-content-wrapper relative z-10 py-12 px-4">
                 <h2 class="section-title">Visual Universe</h2>
                 <div id="admin-gallery-controls" class="hidden text-center mb-6 space-y-3 md:space-y-0 md:space-x-3">
@@ -202,7 +200,7 @@
                 <div id="testimonials-list" class="space-y-8 mb-12">
                     <!-- Approved testimonials will be loaded here -->
                 </div>
-                <div class="card p-6 md:p-8 no-hover-effect"> <!-- Added no-hover-effect -->
+                <div class="card p-6 md:p-8 no-hover-effect"> 
                     <h3 class="font-orbitron text-2xl font-semibold mb-4 text-center" style="color: var(--accent-cyan);">Share Your Experience</h3>
                     <form id="testimonial-form" class="space-y-4">
                         <div>

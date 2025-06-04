@@ -26,18 +26,27 @@ body {
 
 /* Navigation Bar Styles */
 #navbar {
-    background-color: transparent; /* Initially transparent */
+    /* background-color: transparent; */ /* Let Tailwind handle initial, JS handles scrolled */
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     box-shadow: none;
 }
 
 #navbar.scrolled {
-    background-color: var(--navbar-bg-scrolled);
+    background-color: var(--navbar-bg-scrolled); /* Applied by JS */
     backdrop-filter: var(--navbar-blur);
     -webkit-backdrop-filter: var(--navbar-blur);
     box-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
+
+/* Ensure navbar has a background on mobile from the start if it's not scrolled, 
+   but allow the 'scrolled' class to override it for the blur effect */
+@media (max-width: 767px) { /* md breakpoint from Tailwind */
+    #navbar:not(.scrolled) {
+        background-color: rgba(10, 4, 28, 0.95); /* Solid background for mobile nav when not scrolled */
+    }
+}
+
 
 .nav-logo {
     color: var(--accent-cyan);
@@ -55,15 +64,39 @@ body {
     padding: 0.5rem 0.75rem;
     border-radius: 0.375rem;
     transition: color 0.3s ease, background-color 0.3s ease, text-shadow 0.3s ease;
+    display: block; /* For mobile stacking */
+    text-align: center; /* For mobile links */
 }
+@media (min-width: 768px) { /* md breakpoint */
+    .nav-link {
+        display: inline-block; /* Revert for desktop */
+        text-align: left;
+    }
+}
+
 .nav-link:hover, .nav-link.active {
     color: var(--accent-pink);
     background-color: rgba(240, 0, 184, 0.1);
     text-shadow: 0 0 5px var(--accent-pink);
 }
-#admin-status button {
+
+.mobile-nav-link {
+    padding: 0.75rem 1rem; /* Larger tap targets for mobile */
+    width: 100%;
+}
+
+
+#admin-status button, #admin-status-mobile button {
     font-size: 0.875rem;
     padding: 0.4rem 0.8rem;
+}
+
+/* Mobile menu specific styling */
+#mobile-menu {
+    /* Tailwind hidden class handles visibility, JS toggles it. */
+    /* Background is applied via Tailwind in HTML: bg-navbar-bg-scrolled/90 backdrop-blur-md */
+    width: 100%;
+    border-top: 1px solid var(--glass-border); /* Optional separator */
 }
 
 
@@ -78,7 +111,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: -1; /* Ensure it's behind navbar too */
+    z-index: -1; 
 }
 
 .hero-section {
@@ -319,6 +352,29 @@ body {
     text-shadow: 0px 0px 6px var(--bg-primary), 0px 0px 10px var(--bg-primary); 
 }
 
+/* Read More Bio Styles */
+#bio-content {
+    position: relative; /* For gradient overlay if used */
+    transition: max-height 0.7s ease-in-out;
+    overflow: hidden;
+}
+
+#bio-content.collapsed {
+    max-height: 100px; /* Adjust as needed for a few lines of preview */
+    /* Optional: Add a fade-out effect for collapsed text */
+    /* position: relative; */
+}
+#bio-content.collapsed::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px; /* Height of the fade */
+    background: linear-gradient(to bottom, transparent, var(--card-bg) 90%); /* Match card background */
+    pointer-events: none; /* Allow clicks through the gradient */
+}
+
 
 /* Gallery Section Specific Styles */
 .gallery-section {
@@ -351,14 +407,16 @@ body {
 
 /* Carousel Styles */
 #image-carousel {
+    transition: transform 0.5s ease-in-out; /* Added for smooth sliding */
 }
 
 .carousel-item {
     box-sizing: border-box;
+    /* display: none; */ /* Removed: visibility handled by transform or JS logic for itemsPerPage */
 }
-.carousel-item.hidden { 
+/* .carousel-item.hidden { 
     display: none !important;
-}
+} */
 
 
 .carousel-arrow {
@@ -400,6 +458,15 @@ body {
 .prev-arrow {
     left: -20px; 
 }
+@media (max-width: 640px) { /* sm breakpoint */
+    .prev-arrow {
+        left: 5px;
+    }
+    .next-arrow {
+        right: 5px;
+    }
+}
+
 
 .next-arrow {
     right: -20px; 
@@ -414,7 +481,7 @@ body {
     height: 100%;
     background-color: rgba(3, 1, 7, 0.9); 
     z-index: 1000; 
-    display: flex; 
+    /* display: flex;  Tailwind 'hidden' and 'flex' manage this */
     align-items: center;
     justify-content: center;
     padding: 1rem;
@@ -451,9 +518,9 @@ body {
 .video-section .card h4 { 
     color: var(--accent-pink); 
 }
-.video-embed .aspect-w-16.aspect-h-9 {
+.video-embed .aspect-w-16.aspect-h-9 { /* Tailwind provides these aspect ratio classes if available */
     position: relative;
-    padding-bottom: 56.25%; 
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
     height: 0;
     overflow: hidden;
 }
@@ -521,7 +588,7 @@ textarea.form-input {
     border-radius: 0.75rem; 
 }
 
-.card.overflow-hidden.p-0 .gallery-img {
+.card.overflow-hidden.p-0 .gallery-img { /* Ensure border radius is applied if card has p-0 */
     border-radius: 0.75rem;
 }
 
@@ -544,6 +611,7 @@ textarea.form-input {
     filter: drop-shadow(0 0 5px var(--accent-pink)); 
 }
 
+/* Screen Reader Only */
 .sr-only {
     position: absolute;
     width: 1px;
@@ -556,6 +624,8 @@ textarea.form-input {
     border-width: 0;
 }
 
+/* Tailwind Aspect Ratio Fallbacks (if not using @tailwindcss/aspect-ratio plugin) */
+/* Not strictly needed if Tailwind's aspect ratio classes are working from CDN, but good as a fallback */
 .aspect-w-16 { position: relative; padding-bottom: 56.25%; }
 .aspect-h-9 > * { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
 .aspect-square { position: relative; padding-bottom: 100%; }

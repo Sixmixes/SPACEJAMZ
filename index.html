@@ -41,8 +41,6 @@
       window.firebaseConfig = firebaseConfig; 
       // Note: Actual Firebase app initialization (firebase.initializeApp) is done in script.js
       // after the Firebase SDKs below are loaded and the DOM is ready.
-      // The "import" statements for initializeApp, getAnalytics etc. are removed from here
-      // because we are using the CDN-loaded compat libraries which provide a global `firebase` object.
     </script>
     <!-- Load Firebase SDKs (compat versions for global `firebase` object) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -59,7 +57,18 @@
     <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 ease-in-out p-4">
         <div class="container mx-auto flex justify-between items-center">
             <a href="#" class="text-2xl font-orbitron font-bold nav-logo">SPACEJAMZ</a>
-            <div class="space-x-1 md:space-x-2 lg:space-x-4 nav-links text-xs sm:text-sm">
+            
+            <!-- Mobile Menu Button (Hamburger) -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Desktop Navigation Links -->
+            <div class="hidden md:flex md:items-center space-x-1 md:space-x-2 lg:space-x-4 nav-links-desktop text-xs sm:text-sm">
                 <a href="#about" class="nav-link">About</a>
                 <a href="#music" class="nav-link">Music</a>
                 <a href="#videos" class="nav-link">Videos</a>
@@ -67,8 +76,22 @@
                 <a href="#testimonials" class="nav-link">Signals</a>
                 <a href="#contact" class="nav-link">Connect</a>
             </div>
-            <div id="admin-status" class="text-sm">
+             <div id="admin-status" class="hidden md:block text-sm">
                 <!-- Admin status/login button will go here -->
+            </div>
+        </div>
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-navbar-bg-scrolled/90 backdrop-blur-md">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 flex flex-col items-center">
+                <a href="#about" class="nav-link mobile-nav-link block">About</a>
+                <a href="#music" class="nav-link mobile-nav-link block">Music</a>
+                <a href="#videos" class="nav-link mobile-nav-link block">Videos</a>
+                <a href="#gallery" class="nav-link mobile-nav-link block">Visuals</a>
+                <a href="#testimonials" class="nav-link mobile-nav-link block">Signals</a>
+                <a href="#contact" class="nav-link mobile-nav-link block">Connect</a>
+                <div id="admin-status-mobile" class="mt-4 text-sm">
+                    <!-- Mobile admin status will be cloned here by JS -->
+                </div>
             </div>
         </div>
     </nav>
@@ -92,13 +115,16 @@
                     <h2 class="section-title">The Sonic Alchemist</h2>
                     <div class="glassmorphism p-8 md:p-12 rounded-xl">
                         <img src="./images/artwork/spaceman.jpg" alt="SpaceJamz Artist Photo" class="w-36 h-36 rounded-full mx-auto mb-8 border-4" style="border-color: var(--accent-purple); box-shadow: 0 0 15px var(--accent-purple);" onerror="this.onerror=null;this.src='https://placehold.co/150x150/A020F0/E0E7FF?text=SJ'; console.error('Artist photo not found. Path used: ./images/artwork/spaceman.jpg');">
-                        <p class="text-lg md:text-xl text-gray-300 leading-relaxed">
-                            From the heart of Texas, SpaceJamz emerges as a sonic architect, passionately forging evocative, versatile soundscapes destined to amplify storytelling. With a decade of interstellar navigation in music production, SpaceJamz charts courses through the galaxies of Hip-Hop, R&B, EDM, and Pop, blending lush atmospheres, intricate rhythms, and heartfelt melodies that resonate across diverse audiences.
-                            <br><br>
-                            Each composition is a dynamic, authentic voyage, meticulously crafted for the world of sync licensing. After initial expeditions with rapper and artist collaborations, SpaceJamz is now charting a new course: composing vibrant, story-driven tracks for the cinematic universes of film and television.
-                            <br><br>
-                            Drawing inspiration from the pulse of urban life and the spectrum of emotional narratives, the music of SpaceJamz is both innovative and universally accessible. Affiliated with BMI, SpaceJamz is ready to align with creative visions, offering to opt out of BMI for submitted tracks to harmonize with models like Epidemic Sound, eager to launch these auditory experiences to global filmmakers, YouTubers, and brands.
-                        </p>
+                        <div id="bio-content" class="text-lg md:text-xl text-gray-300 leading-relaxed">
+                            <p id="bio-text">
+                                From the heart of Texas, SpaceJamz emerges as a sonic architect, passionately forging evocative, versatile soundscapes destined to amplify storytelling. With a decade of interstellar navigation in music production, SpaceJamz charts courses through the galaxies of Hip-Hop, R&B, EDM, and Pop, blending lush atmospheres, intricate rhythms, and heartfelt melodies that resonate across diverse audiences.
+                                <br><br>
+                                Each composition is a dynamic, authentic voyage, meticulously crafted for the world of sync licensing. After initial expeditions with rapper and artist collaborations, SpaceJamz is now charting a new course: composing vibrant, story-driven tracks for the cinematic universes of film and television.
+                                <br><br>
+                                Drawing inspiration from the pulse of urban life and the spectrum of emotional narratives, the music of SpaceJamz is both innovative and universally accessible. Affiliated with BMI, SpaceJamz is ready to align with creative visions, offering to opt out of BMI for submitted tracks to harmonize with models like Epidemic Sound, eager to launch these auditory experiences to global filmmakers, YouTubers, and brands.
+                            </p>
+                        </div>
+                        <button id="read-more-bio" class="btn-secondary mt-6 text-sm py-2 px-4">Read More</button>
                     </div>
                 </div>
             </div>
